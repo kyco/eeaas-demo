@@ -1,4 +1,4 @@
-#eeaas-demo
+# eeaas-demo
 
 To run the project locally:
 ```
