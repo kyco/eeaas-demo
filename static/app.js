@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 18);
+/******/ 	return __webpack_require__(__webpack_require__.s = 84);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var root = __webpack_require__(9);
+var root = __webpack_require__(14);
 
 /** Built-in value references. */
 var Symbol = root.Symbol;
@@ -83,8 +83,8 @@ module.exports = Symbol;
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(0),
-    getRawTag = __webpack_require__(53),
-    objectToString = __webpack_require__(60);
+    getRawTag = __webpack_require__(52),
+    objectToString = __webpack_require__(59);
 
 /** `Object#toString` result references. */
 var nullTag = '[object Null]',
@@ -183,7 +183,7 @@ module.exports = isObjectLike;
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseToString = __webpack_require__(44);
+var baseToString = __webpack_require__(43);
 
 /**
  * Converts `value` to a string. An empty string is returned for `null`
@@ -215,153 +215,29 @@ module.exports = toString;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css__ = __webpack_require__(81);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__style_css__);
+var g;
 
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
 
-/* harmony default export */ __webpack_exports__["a"] = ({
-  name: 'Snake',
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
 
-  startTrigger: 'snake',
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
 
-  stopTrigger: 'esc',
-
-  stop() {
-    window.snake = window.snake || {};
-    window.snake.active = false;
-    clearInterval(window.snake.gameInterval);
-    document.removeEventListener('keydown', window.snake.keyPush);
-    if (window.snake.markup && window.snake.markup.parentNode) {
-      window.snake.markup.parentNode.removeChild(window.snake.markup);
-    }
-  },
-
-  start() {
-    // Config
-    window.snake = window.snake || {};
-    window.snake.active = true;
-    window.snake.width = 300; // board width
-    window.snake.height = 300; // board height
-    window.snake.speed = 80; // higher is slower
-    window.snake.tailInitial = 5; // size of the snake at the start of the game
-    window.snake.px = window.snake.py = 10; // starting position, from top-left
-    window.snake.gs = 15; // size of blocks
-    window.snake.tc = 20; // size of grid
-    window.snake.ax = window.snake.ay = 15;
-    window.snake.xv = window.snake.yv = 0;
-    window.snake.random = 2;
-    window.snake.trail = [];
-    window.snake.tail = window.snake.tailInitial;
-    window.snake.score = 0;
-    window.snake.wrapperId = 'snake-game-wrapper';
-    window.snake.canvasId = 'snake-game-canvas';
-    window.snake.scoreId = 'snake-game-score';
-
-    const markup = document.createElement('div');
-    markup.id = window.snake.wrapperId;
-    markup.innerHTML = `
-      <div id="${window.snake.scoreId}">${window.snake.score}</div>
-      <canvas id="${window.snake.canvasId}" width="${window.snake.width}" height="${window.snake.height}"></canvas>
-    `;
-    document.body.appendChild(markup);
-
-    window.snake.markup = document.getElementById(window.snake.wrapperId);
-    window.snake.canvas = document.getElementById(window.snake.canvasId);
-    window.snake.context = window.snake.canvas.getContext('2d');
-    window.snake.canvas.style.top = `${window.innerHeight / 2 - window.snake.canvas.offsetHeight / 2}px`;
-    window.snake.canvas.style.left = `${window.innerWidth / 2 - window.snake.canvas.offsetWidth / 2}px`;
-
-    // Game logic
-    window.snake.game = function() {
-      window.snake.score = window.snake.tail - window.snake.tailInitial;
-      document.getElementById(window.snake.scoreId).innerHTML = window.snake.score;
-      window.snake.px += window.snake.xv;
-      window.snake.py += window.snake.yv;
-
-      if (window.snake.px < 0) {
-        window.snake.px = window.snake.tc - 1;
-      }
-      if (window.snake.px > window.snake.tc - 1) {
-        window.snake.px = 0;
-      }
-      if (window.snake.py < 0) {
-        window.snake.py = window.snake.tc - 1;
-      }
-      if (window.snake.py > window.snake.tc - 1) {
-        window.snake.py = 0;
-      }
-
-      window.snake.context.fillStyle = '#fff';
-      window.snake.context.fillRect(0, 0, window.snake.canvas.width, window.snake.canvas.height);
-      window.snake.context.fillStyle = '#0078bf';
-
-      for (let i = 0; i < window.snake.trail.length; i++) {
-        window.snake.context.fillRect(
-          window.snake.trail[i].x * window.snake.gs,
-          window.snake.trail[i].y * window.snake.gs,
-          window.snake.gs - window.snake.random,
-          window.snake.gs - window.snake.random
-        );
-        if (window.snake.trail[i].x === window.snake.px && window.snake.trail[i].y === window.snake.py) {
-          window.snake.tail = window.snake.tailInitial;
-        }
-      }
-
-      window.snake.trail.push({
-        x: window.snake.px,
-        y: window.snake.py
-      });
-
-      while (window.snake.trail.length > window.snake.tail) {
-        window.snake.trail.shift();
-      }
-
-      if (window.snake.ax === window.snake.px && window.snake.ay === window.snake.py) {
-        window.snake.tail++;
-        window.snake.ax = Math.floor(Math.random() * window.snake.tc);
-        window.snake.ay = Math.floor(Math.random() * window.snake.tc);
-      }
-
-      window.snake.context.fillStyle = '#339e00';
-      window.snake.context.fillRect(
-        window.snake.ax * window.snake.gs,
-        window.snake.ay * window.snake.gs,
-        window.snake.gs - window.snake.random,
-        window.snake.gs - window.snake.random
-      );
-    };
-
-    // Key listeners
-    window.snake.keyPush = function(e) {
-      switch (e.keyCode) {
-        case 37:
-          window.snake.xv = -1;
-          window.snake.yv = 0;
-          break;
-        case 38:
-          window.snake.xv = 0;
-          window.snake.yv = -1;
-          break;
-        case 39:
-          window.snake.xv = 1;
-          window.snake.yv = 0;
-          break;
-        case 40:
-          window.snake.xv = 0;
-          window.snake.yv = 1;
-          break;
-        // no default
-      }
-    };
-
-    // Start game
-    document.addEventListener('keydown', window.snake.keyPush);
-    window.snake.gameInterval = setInterval(window.snake.game, window.snake.speed);
-  }
-});
+module.exports = g;
 
 
 /***/ }),
@@ -444,190 +320,10 @@ function toComment(sourceMap) {
   return '/*# ' + data + ' */';
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(20).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).Buffer))
 
 /***/ }),
 /* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-module.exports = freeGlobal;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-/** Used to compose unicode character classes. */
-var rsAstralRange = '\\ud800-\\udfff',
-    rsComboMarksRange = '\\u0300-\\u036f',
-    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
-    rsComboSymbolsRange = '\\u20d0-\\u20ff',
-    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
-    rsVarRange = '\\ufe0e\\ufe0f';
-
-/** Used to compose unicode capture groups. */
-var rsZWJ = '\\u200d';
-
-/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
-var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
-
-/**
- * Checks if `string` contains Unicode symbols.
- *
- * @private
- * @param {string} string The string to inspect.
- * @returns {boolean} Returns `true` if a symbol is found, else `false`.
- */
-function hasUnicode(string) {
-  return reHasUnicode.test(string);
-}
-
-module.exports = hasUnicode;
-
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var freeGlobal = __webpack_require__(7);
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-
-/***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsArguments = __webpack_require__(38),
-    isObjectLike = __webpack_require__(3);
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-    !propertyIsEnumerable.call(value, 'callee');
-};
-
-module.exports = isArguments;
-
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isFunction = __webpack_require__(72),
-    isLength = __webpack_require__(12);
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-module.exports = isArrayLike;
-
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-module.exports = isLength;
-
-
-/***/ }),
-/* 13 */
 /***/ (function(module, exports) {
 
 /*
@@ -879,455 +575,7 @@ function updateLink(linkElement, obj) {
 
 
 /***/ }),
-/* 14 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = function(module) {
-	if(!module.webpackPolyfill) {
-		module.deprecate = function() {};
-		module.paths = [];
-		// module.parent = undefined by default
-		if(!module.children) module.children = [];
-		Object.defineProperty(module, "loaded", {
-			enumerable: true,
-			get: function() {
-				return module.l;
-			}
-		});
-		Object.defineProperty(module, "id", {
-			enumerable: true,
-			get: function() {
-				return module.i;
-			}
-		});
-		module.webpackPolyfill = 1;
-	}
-	return module;
-};
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css__ = __webpack_require__(80);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__style_css__);
-
-
-const NyanCat = {
-  name: 'NyanCat',
-
-  startTrigger: 'nyan',
-
-  stopTrigger: 'esc',
-
-  start() {
-    // Config
-    window.nyancat = window.nyancat || {};
-    window.nyancat.active = true;
-    const wrapperId = `nyancat-wrapper-${new Date().getTime()}`;
-    window.nyancat.nyanClass = 'nyan';
-    window.nyancat.rainbowClass = 'rainbow';
-
-    const markup = document.createElement('div');
-    markup.id = wrapperId;
-    markup.innerHTML = `<div class="${window.nyancat.nyanClass}"></div>`;
-    document.body.appendChild(markup);
-    window.nyancat.markup = document.getElementById(wrapperId);
-
-    let px = 0;
-    let py = 0;
-    let an = false;
-    let posX = 100;
-    let posY = 100;
-    let rainbow = null;
-    const nyan = document.querySelectorAll(`.${window.nyancat.nyanClass}`);
-    const pilha = [];
-    const altura = 800;
-    const largura = parseInt(document.body.getBoundingClientRect().width, 10);
-    const tamanhoTela = parseInt(largura / 9, 10);
-
-    const getRandomInt = function(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-
-    window.nyancat.mouseMove = function(e) {
-      posX = e.pageX;
-      posY = e.pageY;
-    };
-
-    document.addEventListener('mousemove', window.nyancat.mouseMove);
-
-    for (let i = 0; i < tamanhoTela; i++) {
-      const rain = document.createElement('div');
-      rain.classList.add(window.nyancat.rainbowClass);
-      rain.style.left = `${i * 9}px`;
-      document.getElementById(wrapperId).appendChild(rain);
-    }
-    rainbow = document.querySelectorAll(`.${window.nyancat.rainbowClass}`);
-
-    const criarEstrela = function() {
-      const rand = getRandomInt(3, 14);
-      const tempoDeVida = getRandomInt(5, 10);
-      const star = document.createElement('div');
-      star.classList.add('star');
-      star.style.width = `${rand}px`;
-      star.style.height = `${rand}px`;
-      star.style.left = `${largura - 10}px`;
-      star.style.top = `${Math.floor(Math.random() * altura + 1)}px`;
-      star.style.transition = `all ${tempoDeVida}s linear`;
-      star.style.transform = 'translate(0px, 0px)';
-      document.getElementById(wrapperId).appendChild(star);
-      window.setTimeout(() => (star.style.transform = `translate(-${largura}px, 0px)`), getRandomInt(5, 10) * 10);
-      window.setTimeout(
-        () => document.getElementById(wrapperId) && document.getElementById(wrapperId).removeChild(star),
-        tempoDeVida * 1000
-      );
-    };
-
-    const moveNyan = function() {
-      const tamX = nyan[0].getBoundingClientRect().width / 2;
-      const tamY = nyan[0].getBoundingClientRect().height / 2;
-      px += (posX - px - tamX) / 50;
-      py += (posY - py - tamY) / 50;
-      nyan[0].style.left = `${px}px`;
-      nyan[0].style.top = `${py}px`;
-    };
-
-    const peidaArcoIris = function() {
-      const qnt = Math.floor(nyan[0].offsetLeft / 9) + 2;
-      if (pilha.length >= qnt) {
-        pilha.pop();
-      }
-      pilha.unshift(py);
-      rainbow.forEach(rainbow => (rainbow.style.display = 'none'));
-      for (let i = 0; i < qnt; i++) {
-        let am = i % 2;
-        if (an) {
-          am = i % 2 ? 0 : 1;
-        }
-        const currentRainbow = document.querySelectorAll(`.${window.nyancat.rainbowClass}`)[qnt - i];
-        if (currentRainbow) {
-          currentRainbow.style.top = `${pilha[i] + am}px`;
-          currentRainbow.style.display = 'block';
-        }
-      }
-    };
-
-    window.nyancat.interval1 = window.setInterval(() => {
-      moveNyan();
-      peidaArcoIris();
-    }, 10);
-    window.nyancat.interval2 = window.setInterval(() => criarEstrela(), 300);
-    window.nyancat.interval3 = window.setInterval(() => (an = !an), 500);
-
-    let frame = 0;
-    window.nyancat.interval4 = window.setInterval(() => {
-      nyan[0].style.backgroundPosition = `${34 * frame}px`;
-      frame++;
-    }, 100);
-  },
-
-  stop() {
-    window.nyancat = window.nyancat || {};
-    window.nyancat.active = false;
-    document.removeEventListener('mousemove', window.nyancat.mouseMove);
-    window.clearInterval(window.nyancat.interval1);
-    window.clearInterval(window.nyancat.interval2);
-    window.clearInterval(window.nyancat.interval3);
-    window.clearInterval(window.nyancat.interval4);
-    if (window.nyancat.markup && window.nyancat.markup.parentNode) {
-      window.nyancat.markup.parentNode.removeChild(window.nyancat.markup);
-    }
-  }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (NyanCat);
-
-
-/***/ }),
-/* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(68);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_forEach__ = __webpack_require__(69);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_forEach__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_camelCase__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_camelCase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_camelCase__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__keycodemap__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__event__ = __webpack_require__(23);
-/**
- * # Eeaas
- * This utility creates a very rough skelton with which easter eggs can be injected into apps/websites.
- * Use at own risk.
- */
-
-
-
-
-
-
-
-const containsKeyName = code => code.indexOf('|') > -1 || __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][code];
-const getKeyupNamespace = (egg, eventName) => `keyup.${__WEBPACK_IMPORTED_MODULE_2_lodash_camelCase___default()(egg.name)}_${eventName}`;
-const getSetName = index => `Set${index + 1}`;
-
-const isValidEgg = function(egg) {
-  // Ensure `name` exists
-  if (!egg.name) {
-    console.error('Failed to register, register() requires a "name".');
-    return false;
-  }
-
-  // Ensure `startTrigger` and `start` methods exist
-  if (!egg.startTrigger || !egg.start) {
-    console.error(`Failed to register "${egg.name}", register() requires a "startTrigger" and an "start".`);
-    return false;
-  }
-
-  // Ensure `startTrigger` is a string, array or a function
-  if (
-    typeof egg.startTrigger !== 'string' &&
-    typeof egg.startTrigger !== 'function' &&
-    !Array.isArray(egg.startTrigger)
-  ) {
-    console.error(
-      `Failed to register "${egg.name}", register() requires "startTrigger" to be a string, array or a function.`
-    );
-    return false;
-  }
-
-  // Ensure `start` is a function
-  if (typeof egg.start !== 'function') {
-    console.error(`Failed to register "${egg.name}", register() requires "start" to be a function.`);
-    return false;
-  }
-
-  return true;
-};
-
-const attachKeyupHandler = function(egg, eventName, trigger, callback) {
-  let index = 0;
-  let sequence = [];
-  let buttons = [];
-
-  if (!Array.isArray(trigger)) {
-    buttons = trigger.split(containsKeyName(trigger) ? '|' : '');
-    buttons.forEach(key => {
-      buttons[buttons.indexOf(key)] = containsKeyName(key) ? key : key.split('');
-    });
-    buttons = __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(buttons);
-  } else {
-    buttons = {};
-    trigger.forEach((set, i) => {
-      const setName = getSetName(i);
-      buttons[setName] = {};
-      buttons[setName].index = 0;
-      buttons[setName].sequence = [];
-      buttons[setName].codes = trigger[i].split(containsKeyName(trigger[i]) ? '|' : '');
-      buttons[setName].codes.forEach(key => {
-        buttons[setName].codes[buttons[setName].codes.indexOf(key)] = containsKeyName(key) ? key : key.split('');
-      });
-      buttons[setName].codes = __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(buttons[setName].codes);
-    });
-  }
-
-  __WEBPACK_IMPORTED_MODULE_4__event__["a" /* Event */].addEventListener(getKeyupNamespace(egg, eventName), event => {
-    if (!Array.isArray(trigger)) {
-      const button = buttons[index];
-      const expected = __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][button];
-
-      if (event.which === expected) {
-        sequence.push(button);
-        index += 1;
-        if (sequence.join('|') === buttons.join('|')) {
-          callback();
-          index = 0;
-          sequence = [];
-        }
-      } else {
-        index = 0;
-        sequence = [];
-      }
-    } else {
-      trigger.forEach((set, i) => {
-        const setName = getSetName(i);
-        const button = buttons[setName].codes[buttons[setName].index];
-        const expected = __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][button];
-
-        if (event.which === expected) {
-          buttons[setName].sequence.push(button);
-          buttons[setName].index += 1;
-          if (buttons[setName].sequence.join('|') === buttons[setName].codes.join('|')) {
-            callback();
-            buttons[setName].index = 0;
-            buttons[setName].sequence = [];
-          }
-        } else {
-          buttons[setName].index = 0;
-          buttons[setName].sequence = [];
-        }
-      });
-    }
-  });
-};
-
-const detachKeyupHandler = function(egg, eventName) {
-  __WEBPACK_IMPORTED_MODULE_4__event__["a" /* Event */].removeEventListener(getKeyupNamespace(egg, eventName));
-};
-
-const Eeaas = {
-  Eggs: {},
-
-  enable() {
-    __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default()(this.Eggs, egg => egg.enable());
-  },
-
-  disable() {
-    __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default()(this.Eggs, egg => {
-      egg.stop();
-      egg.disable();
-    });
-  },
-
-  register(egg = {}) {
-    if (!isValidEgg(egg)) {
-      return;
-    }
-
-    if (egg.startTrigger && egg.start && typeof egg.start === 'function') {
-      if (typeof egg.startTrigger === 'string' || Array.isArray(egg.startTrigger)) {
-        egg.enable = () => {
-          attachKeyupHandler(egg, 'start', egg.startTrigger, egg.start);
-          attachKeyupHandler(egg, 'stop', egg.stopTrigger, egg.stop);
-        };
-      }
-      if (typeof egg.startTrigger === 'function') {
-        if (typeof egg.stopTrigger === 'string' || Array.isArray(egg.stopTrigger)) {
-          attachKeyupHandler(egg, 'stop', egg.stopTrigger, egg.stop);
-        }
-        if (!egg.enable || !egg.disable) {
-          const name = egg.name;
-          const missingMethod = egg.enable && !egg.disable ? '"disable"' : '"enable"';
-          egg.enable = () => {
-            console.warn(
-              `"${name}" has no ${missingMethod} method. Using a function as "startTrigger" requires a custom "enable" and "disable" method.`
-            );
-          };
-        }
-      }
-    }
-
-    if (egg.stopTrigger && egg.stop && typeof egg.stop === 'function') {
-      if (typeof egg.stopTrigger === 'string' || Array.isArray(egg.stopTrigger)) {
-        egg.disable = () => {
-          detachKeyupHandler(egg, 'start');
-          detachKeyupHandler(egg, 'stop');
-        };
-      }
-      if (typeof egg.stopTrigger === 'function') {
-        if (typeof egg.startTrigger === 'string') {
-          detachKeyupHandler(egg, 'start');
-        }
-        if (!egg.disable || !egg.enable) {
-          const name = egg.name;
-          const missingMethod = egg.disable && !egg.enable ? '"enable"' : '"disable"';
-          egg.disable = () => {
-            console.warn(
-              `"${name}" has no ${missingMethod} method. Using a function as "stopTrigger" requires a custom "enable" and "disable" method.`
-            );
-          };
-        }
-      }
-    }
-
-    if (!egg.stopTrigger) {
-      egg.stop = () =>
-        console.warn(`"${egg.name}" has no "stopTrigger" method. Ensure "${egg.name}" can be stopped/removed.`);
-    }
-    if (!egg.stop) {
-      egg.stop = () => console.warn(`"${egg.name}" has no "stop" method. Ensure "${egg.name}" was removed correctly.`);
-    }
-
-    this.Eggs[egg.name] = egg;
-  }
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Eeaas);
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_eeaas__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_eeaas_nyancat__ = __webpack_require__(16);
-
-
-
-
-const snake1 = Object.assign({}, __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__["a" /* default */]);
-const snake2 = Object.assign({}, __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__["a" /* default */]);
-
-snake1.name = 'Snake1';
-snake2.name = 'Snake2';
-
-Object.assign(snake2, {
-  enable() {
-    this.startTrigger();
-  },
-
-  disable() {
-    document.getElementById('snake-trigger-button').removeEventListener('click', this.start);
-    this.stop();
-  },
-
-  startTrigger() {
-    document.getElementById('snake-trigger-button').addEventListener('click', this.start);
-  }
-});
-
-__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(snake1);
-__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(snake2);
-__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(__WEBPACK_IMPORTED_MODULE_2_eeaas_nyancat__["a" /* default */]);
-__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].enable();
-
-
-/***/ }),
-/* 19 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1450,7 +698,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 20 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1464,9 +712,9 @@ function fromByteArray (uint8) {
 
 
 
-var base64 = __webpack_require__(19)
-var ieee754 = __webpack_require__(25)
-var isArray = __webpack_require__(26)
+var base64 = __webpack_require__(8)
+var ieee754 = __webpack_require__(10)
+var isArray = __webpack_require__(11)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -3244,10 +2492,823 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports) {
+
+var toString = {}.toString;
+
+module.exports = Array.isArray || function (arr) {
+  return toString.call(arr) == '[object Array]';
+};
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
+
+/** Used to compose unicode character classes. */
+var rsAstralRange = '\\ud800-\\udfff',
+    rsComboMarksRange = '\\u0300-\\u036f',
+    reComboHalfMarksRange = '\\ufe20-\\ufe2f',
+    rsComboSymbolsRange = '\\u20d0-\\u20ff',
+    rsComboRange = rsComboMarksRange + reComboHalfMarksRange + rsComboSymbolsRange,
+    rsVarRange = '\\ufe0e\\ufe0f';
+
+/** Used to compose unicode capture groups. */
+var rsZWJ = '\\u200d';
+
+/** Used to detect strings with [zero-width joiners or code points from the astral planes](http://eev.ee/blog/2015/09/12/dark-corners-of-unicode/). */
+var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
+
+/**
+ * Checks if `string` contains Unicode symbols.
+ *
+ * @private
+ * @param {string} string The string to inspect.
+ * @returns {boolean} Returns `true` if a symbol is found, else `false`.
+ */
+function hasUnicode(string) {
+  return reHasUnicode.test(string);
+}
+
+module.exports = hasUnicode;
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var freeGlobal = __webpack_require__(12);
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsArguments = __webpack_require__(37),
+    isObjectLike = __webpack_require__(3);
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+module.exports = isArguments;
+
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isFunction = __webpack_require__(71),
+    isLength = __webpack_require__(17);
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css__ = __webpack_require__(79);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__style_css__);
+
+
+const NyanCat = {
+  name: 'NyanCat',
+
+  startTrigger: 'nyan',
+
+  stopTrigger: 'esc',
+
+  start() {
+    // Config
+    window.nyancat = window.nyancat || {};
+    window.nyancat.active = true;
+    const wrapperId = `nyancat-wrapper-${new Date().getTime()}`;
+    window.nyancat.nyanClass = 'nyan';
+    window.nyancat.rainbowClass = 'rainbow';
+
+    const markup = document.createElement('div');
+    markup.id = wrapperId;
+    markup.innerHTML = `<div class="${window.nyancat.nyanClass}"></div>`;
+    document.body.appendChild(markup);
+    window.nyancat.markup = document.getElementById(wrapperId);
+
+    let px = 0;
+    let py = 0;
+    let an = false;
+    let posX = 100;
+    let posY = 100;
+    let rainbow = null;
+    const nyan = document.querySelectorAll(`.${window.nyancat.nyanClass}`);
+    const pilha = [];
+    const altura = 800;
+    const largura = parseInt(document.body.getBoundingClientRect().width, 10);
+    const tamanhoTela = parseInt(largura / 9, 10);
+
+    const getRandomInt = function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    };
+
+    window.nyancat.mouseMove = function(e) {
+      posX = e.pageX;
+      posY = e.pageY;
+    };
+
+    document.addEventListener('mousemove', window.nyancat.mouseMove);
+
+    for (let i = 0; i < tamanhoTela; i++) {
+      const rain = document.createElement('div');
+      rain.classList.add(window.nyancat.rainbowClass);
+      rain.style.left = `${i * 9}px`;
+      document.getElementById(wrapperId).appendChild(rain);
+    }
+    rainbow = document.querySelectorAll(`.${window.nyancat.rainbowClass}`);
+
+    const criarEstrela = function() {
+      const rand = getRandomInt(3, 14);
+      const tempoDeVida = getRandomInt(5, 10);
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.width = `${rand}px`;
+      star.style.height = `${rand}px`;
+      star.style.left = `${largura - 10}px`;
+      star.style.top = `${Math.floor(Math.random() * altura + 1)}px`;
+      star.style.transition = `all ${tempoDeVida}s linear`;
+      star.style.transform = 'translate(0px, 0px)';
+      document.getElementById(wrapperId).appendChild(star);
+      window.setTimeout(() => (star.style.transform = `translate(-${largura}px, 0px)`), getRandomInt(5, 10) * 10);
+      window.setTimeout(
+        () => document.getElementById(wrapperId) && document.getElementById(wrapperId).removeChild(star),
+        tempoDeVida * 1000
+      );
+    };
+
+    const moveNyan = function() {
+      const tamX = nyan[0].getBoundingClientRect().width / 2;
+      const tamY = nyan[0].getBoundingClientRect().height / 2;
+      px += (posX - px - tamX) / 50;
+      py += (posY - py - tamY) / 50;
+      nyan[0].style.left = `${px}px`;
+      nyan[0].style.top = `${py}px`;
+    };
+
+    const peidaArcoIris = function() {
+      const qnt = Math.floor(nyan[0].offsetLeft / 9) + 2;
+      if (pilha.length >= qnt) {
+        pilha.pop();
+      }
+      pilha.unshift(py);
+      rainbow.forEach(rainbow => (rainbow.style.display = 'none'));
+      for (let i = 0; i < qnt; i++) {
+        let am = i % 2;
+        if (an) {
+          am = i % 2 ? 0 : 1;
+        }
+        const currentRainbow = document.querySelectorAll(`.${window.nyancat.rainbowClass}`)[qnt - i];
+        if (currentRainbow) {
+          currentRainbow.style.top = `${pilha[i] + am}px`;
+          currentRainbow.style.display = 'block';
+        }
+      }
+    };
+
+    window.nyancat.interval1 = window.setInterval(() => {
+      moveNyan();
+      peidaArcoIris();
+    }, 10);
+    window.nyancat.interval2 = window.setInterval(() => criarEstrela(), 300);
+    window.nyancat.interval3 = window.setInterval(() => (an = !an), 500);
+
+    let frame = 0;
+    window.nyancat.interval4 = window.setInterval(() => {
+      nyan[0].style.backgroundPosition = `${34 * frame}px`;
+      frame++;
+    }, 100);
+  },
+
+  stop() {
+    window.nyancat = window.nyancat || {};
+    window.nyancat.active = false;
+    document.removeEventListener('mousemove', window.nyancat.mouseMove);
+    window.clearInterval(window.nyancat.interval1);
+    window.clearInterval(window.nyancat.interval2);
+    window.clearInterval(window.nyancat.interval3);
+    window.clearInterval(window.nyancat.interval4);
+    if (window.nyancat.markup && window.nyancat.markup.parentNode) {
+      window.nyancat.markup.parentNode.removeChild(window.nyancat.markup);
+    }
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (NyanCat);
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css__ = __webpack_require__(80);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style_css___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__style_css__);
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  name: 'Snake',
+
+  startTrigger: 'snake',
+
+  stopTrigger: 'esc',
+
+  stop() {
+    window.snake = window.snake || {};
+    window.snake.active = false;
+    clearInterval(window.snake.gameInterval);
+    document.removeEventListener('keydown', window.snake.keyPush);
+    if (window.snake.markup && window.snake.markup.parentNode) {
+      window.snake.markup.parentNode.removeChild(window.snake.markup);
+    }
+  },
+
+  start() {
+    // Config
+    window.snake = window.snake || {};
+    window.snake.active = true;
+    window.snake.width = 300; // board width
+    window.snake.height = 300; // board height
+    window.snake.speed = 80; // higher is slower
+    window.snake.tailInitial = 5; // size of the snake at the start of the game
+    window.snake.px = window.snake.py = 10; // starting position, from top-left
+    window.snake.gs = 15; // size of blocks
+    window.snake.tc = 20; // size of grid
+    window.snake.ax = window.snake.ay = 15;
+    window.snake.xv = window.snake.yv = 0;
+    window.snake.random = 2;
+    window.snake.trail = [];
+    window.snake.tail = window.snake.tailInitial;
+    window.snake.score = 0;
+    window.snake.wrapperId = 'snake-game-wrapper';
+    window.snake.canvasId = 'snake-game-canvas';
+    window.snake.scoreId = 'snake-game-score';
+
+    const markup = document.createElement('div');
+    markup.id = window.snake.wrapperId;
+    markup.innerHTML = `
+      <div id="${window.snake.scoreId}">${window.snake.score}</div>
+      <canvas id="${window.snake.canvasId}" width="${window.snake.width}" height="${window.snake.height}"></canvas>
+    `;
+    document.body.appendChild(markup);
+
+    window.snake.markup = document.getElementById(window.snake.wrapperId);
+    window.snake.canvas = document.getElementById(window.snake.canvasId);
+    window.snake.context = window.snake.canvas.getContext('2d');
+    window.snake.canvas.style.top = `${window.innerHeight / 2 - window.snake.canvas.offsetHeight / 2}px`;
+    window.snake.canvas.style.left = `${window.innerWidth / 2 - window.snake.canvas.offsetWidth / 2}px`;
+
+    // Game logic
+    window.snake.game = function() {
+      window.snake.score = window.snake.tail - window.snake.tailInitial;
+      document.getElementById(window.snake.scoreId).innerHTML = window.snake.score;
+      window.snake.px += window.snake.xv;
+      window.snake.py += window.snake.yv;
+
+      if (window.snake.px < 0) {
+        window.snake.px = window.snake.tc - 1;
+      }
+      if (window.snake.px > window.snake.tc - 1) {
+        window.snake.px = 0;
+      }
+      if (window.snake.py < 0) {
+        window.snake.py = window.snake.tc - 1;
+      }
+      if (window.snake.py > window.snake.tc - 1) {
+        window.snake.py = 0;
+      }
+
+      window.snake.context.fillStyle = '#fff';
+      window.snake.context.fillRect(0, 0, window.snake.canvas.width, window.snake.canvas.height);
+      window.snake.context.fillStyle = '#0078bf';
+
+      for (let i = 0; i < window.snake.trail.length; i++) {
+        window.snake.context.fillRect(
+          window.snake.trail[i].x * window.snake.gs,
+          window.snake.trail[i].y * window.snake.gs,
+          window.snake.gs - window.snake.random,
+          window.snake.gs - window.snake.random
+        );
+        if (window.snake.trail[i].x === window.snake.px && window.snake.trail[i].y === window.snake.py) {
+          window.snake.tail = window.snake.tailInitial;
+        }
+      }
+
+      window.snake.trail.push({
+        x: window.snake.px,
+        y: window.snake.py
+      });
+
+      while (window.snake.trail.length > window.snake.tail) {
+        window.snake.trail.shift();
+      }
+
+      if (window.snake.ax === window.snake.px && window.snake.ay === window.snake.py) {
+        window.snake.tail++;
+        window.snake.ax = Math.floor(Math.random() * window.snake.tc);
+        window.snake.ay = Math.floor(Math.random() * window.snake.tc);
+      }
+
+      window.snake.context.fillStyle = '#339e00';
+      window.snake.context.fillRect(
+        window.snake.ax * window.snake.gs,
+        window.snake.ay * window.snake.gs,
+        window.snake.gs - window.snake.random,
+        window.snake.gs - window.snake.random
+      );
+    };
+
+    // Key listeners
+    window.snake.keyPush = function(e) {
+      switch (e.keyCode) {
+        case 37:
+          window.snake.xv = -1;
+          window.snake.yv = 0;
+          break;
+        case 38:
+          window.snake.xv = 0;
+          window.snake.yv = -1;
+          break;
+        case 39:
+          window.snake.xv = 1;
+          window.snake.yv = 0;
+          break;
+        case 40:
+          window.snake.xv = 0;
+          window.snake.yv = 1;
+          break;
+        // no default
+      }
+    };
+
+    // Start game
+    document.addEventListener('keydown', window.snake.keyPush);
+    window.snake.gameInterval = setInterval(window.snake.game, window.snake.speed);
+  }
+});
+
 
 /***/ }),
 /* 21 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_flatten__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_forEach__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_forEach__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_camelCase__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_camelCase___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_camelCase__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__keycodemap__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__event__ = __webpack_require__(24);
+/**
+ * # Eeaas
+ * This utility creates a very rough skelton with which easter eggs can be injected into apps/websites.
+ * Use at own risk.
+ */
+
+
+
+
+
+
+
+const containsKeyName = code => code.indexOf('|') > -1 || __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][code];
+const getKeyupNamespace = (egg, eventName) => `keyup.${__WEBPACK_IMPORTED_MODULE_2_lodash_camelCase___default()(egg.name)}_${eventName}`;
+const getSetName = index => `Set${index + 1}`;
+
+const isValidEgg = function(egg) {
+  // Ensure `name` exists
+  if (!egg.name) {
+    console.error('Failed to register, register() requires a "name".');
+    return false;
+  }
+
+  // Ensure `startTrigger` and `start` methods exist
+  if (!egg.startTrigger || !egg.start) {
+    console.error(`Failed to register "${egg.name}", register() requires a "startTrigger" and an "start".`);
+    return false;
+  }
+
+  // Ensure `startTrigger` is a string, array or a function
+  if (
+    typeof egg.startTrigger !== 'string' &&
+    typeof egg.startTrigger !== 'function' &&
+    !Array.isArray(egg.startTrigger)
+  ) {
+    console.error(
+      `Failed to register "${egg.name}", register() requires "startTrigger" to be a string, array or a function.`
+    );
+    return false;
+  }
+
+  // Ensure `start` is a function
+  if (typeof egg.start !== 'function') {
+    console.error(`Failed to register "${egg.name}", register() requires "start" to be a function.`);
+    return false;
+  }
+
+  return true;
+};
+
+const attachKeyupHandler = function(egg, eventName, trigger, callback) {
+  let index = 0;
+  let sequence = [];
+  let buttons = [];
+
+  if (!Array.isArray(trigger)) {
+    buttons = trigger.split(containsKeyName(trigger) ? '|' : '');
+    buttons.forEach(key => {
+      buttons[buttons.indexOf(key)] = containsKeyName(key) ? key : key.split('');
+    });
+    buttons = __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(buttons);
+  } else {
+    buttons = {};
+    trigger.forEach((set, i) => {
+      const setName = getSetName(i);
+      buttons[setName] = {};
+      buttons[setName].index = 0;
+      buttons[setName].sequence = [];
+      buttons[setName].codes = trigger[i].split(containsKeyName(trigger[i]) ? '|' : '');
+      buttons[setName].codes.forEach(key => {
+        buttons[setName].codes[buttons[setName].codes.indexOf(key)] = containsKeyName(key) ? key : key.split('');
+      });
+      buttons[setName].codes = __WEBPACK_IMPORTED_MODULE_0_lodash_flatten___default()(buttons[setName].codes);
+    });
+  }
+
+  __WEBPACK_IMPORTED_MODULE_4__event__["a" /* Event */].addEventListener(getKeyupNamespace(egg, eventName), event => {
+    if (!Array.isArray(trigger)) {
+      const button = buttons[index];
+      const expected = __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][button];
+
+      if (event.which === expected) {
+        sequence.push(button);
+        index += 1;
+        if (sequence.join('|') === buttons.join('|')) {
+          callback();
+          index = 0;
+          sequence = [];
+        }
+      } else {
+        index = 0;
+        sequence = [];
+      }
+    } else {
+      trigger.forEach((set, i) => {
+        const setName = getSetName(i);
+        const button = buttons[setName].codes[buttons[setName].index];
+        const expected = __WEBPACK_IMPORTED_MODULE_3__keycodemap__["a" /* default */][button];
+
+        if (event.which === expected) {
+          buttons[setName].sequence.push(button);
+          buttons[setName].index += 1;
+          if (buttons[setName].sequence.join('|') === buttons[setName].codes.join('|')) {
+            callback();
+            buttons[setName].index = 0;
+            buttons[setName].sequence = [];
+          }
+        } else {
+          buttons[setName].index = 0;
+          buttons[setName].sequence = [];
+        }
+      });
+    }
+  });
+};
+
+const detachKeyupHandler = function(egg, eventName) {
+  __WEBPACK_IMPORTED_MODULE_4__event__["a" /* Event */].removeEventListener(getKeyupNamespace(egg, eventName));
+};
+
+const Eeaas = {
+  Eggs: {},
+
+  enable() {
+    __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default()(this.Eggs, egg => egg.enable());
+  },
+
+  disable() {
+    __WEBPACK_IMPORTED_MODULE_1_lodash_forEach___default()(this.Eggs, egg => {
+      egg.stop();
+      egg.disable();
+    });
+  },
+
+  register(egg = {}) {
+    if (!isValidEgg(egg)) {
+      return;
+    }
+
+    if (egg.startTrigger && egg.start && typeof egg.start === 'function') {
+      if (typeof egg.startTrigger === 'string' || Array.isArray(egg.startTrigger)) {
+        egg.enable = () => {
+          attachKeyupHandler(egg, 'start', egg.startTrigger, egg.start);
+          attachKeyupHandler(egg, 'stop', egg.stopTrigger, egg.stop);
+        };
+      }
+      if (typeof egg.startTrigger === 'function') {
+        if (typeof egg.stopTrigger === 'string' || Array.isArray(egg.stopTrigger)) {
+          attachKeyupHandler(egg, 'stop', egg.stopTrigger, egg.stop);
+        }
+        if (!egg.enable || !egg.disable) {
+          const name = egg.name;
+          const missingMethod = egg.enable && !egg.disable ? '"disable"' : '"enable"';
+          egg.enable = () => {
+            console.warn(
+              `"${name}" has no ${missingMethod} method. Using a function as "startTrigger" requires a custom "enable" and "disable" method.`
+            );
+          };
+        }
+      }
+    }
+
+    if (egg.stopTrigger && egg.stop && typeof egg.stop === 'function') {
+      if (typeof egg.stopTrigger === 'string' || Array.isArray(egg.stopTrigger)) {
+        egg.disable = () => {
+          detachKeyupHandler(egg, 'start');
+          detachKeyupHandler(egg, 'stop');
+        };
+      }
+      if (typeof egg.stopTrigger === 'function') {
+        if (typeof egg.startTrigger === 'string') {
+          detachKeyupHandler(egg, 'start');
+        }
+        if (!egg.disable || !egg.enable) {
+          const name = egg.name;
+          const missingMethod = egg.disable && !egg.enable ? '"enable"' : '"disable"';
+          egg.disable = () => {
+            console.warn(
+              `"${name}" has no ${missingMethod} method. Using a function as "stopTrigger" requires a custom "enable" and "disable" method.`
+            );
+          };
+        }
+      }
+    }
+
+    if (!egg.stopTrigger) {
+      egg.stop = () =>
+        console.warn(`"${egg.name}" has no "stopTrigger" method. Ensure "${egg.name}" can be stopped/removed.`);
+    }
+    if (!egg.stop) {
+      egg.stop = () => console.warn(`"${egg.name}" has no "stop" method. Ensure "${egg.name}" was removed correctly.`);
+    }
+
+    this.Eggs[egg.name] = egg;
+  }
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Eeaas);
+
+
+/***/ }),
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(6)(true);
@@ -3261,7 +3322,7 @@ exports.push([module.i, "[id^='nyancat-wrapper'] {\n  position: fixed;\n  z-inde
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(6)(true);
@@ -3275,7 +3336,7 @@ exports.push([module.i, "#snake-game-wrapper {\n  position: fixed;\n  top: 0;\n 
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3306,7 +3367,7 @@ const Event = new EventClass();
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3405,108 +3466,7 @@ const Event = new EventClass();
 
 
 /***/ }),
-/* 25 */
-/***/ (function(module, exports) {
-
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-
-/***/ }),
 /* 26 */
-/***/ (function(module, exports) {
-
-var toString = {}.toString;
-
-module.exports = Array.isArray || function (arr) {
-  return toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-/* 27 */
 /***/ (function(module, exports) {
 
 /**
@@ -3534,15 +3494,15 @@ module.exports = arrayEach;
 
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseTimes = __webpack_require__(43),
-    isArguments = __webpack_require__(10),
+var baseTimes = __webpack_require__(42),
+    isArguments = __webpack_require__(15),
     isArray = __webpack_require__(2),
-    isBuffer = __webpack_require__(71),
-    isIndex = __webpack_require__(56),
-    isTypedArray = __webpack_require__(75);
+    isBuffer = __webpack_require__(70),
+    isIndex = __webpack_require__(55),
+    isTypedArray = __webpack_require__(74);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -3589,7 +3549,7 @@ module.exports = arrayLikeKeys;
 
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports) {
 
 /**
@@ -3616,7 +3576,7 @@ module.exports = arrayMap;
 
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports) {
 
 /**
@@ -3642,7 +3602,7 @@ module.exports = arrayPush;
 
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports) {
 
 /**
@@ -3674,7 +3634,7 @@ module.exports = arrayReduce;
 
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports) {
 
 /**
@@ -3692,7 +3652,7 @@ module.exports = asciiToArray;
 
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports) {
 
 /** Used to match words composed of alphanumeric characters. */
@@ -3713,11 +3673,11 @@ module.exports = asciiWords;
 
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseForOwn = __webpack_require__(37),
-    createBaseEach = __webpack_require__(48);
+var baseForOwn = __webpack_require__(36),
+    createBaseEach = __webpack_require__(47);
 
 /**
  * The base implementation of `_.forEach` without support for iteratee shorthands.
@@ -3733,11 +3693,11 @@ module.exports = baseEach;
 
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayPush = __webpack_require__(30),
-    isFlattenable = __webpack_require__(55);
+var arrayPush = __webpack_require__(29),
+    isFlattenable = __webpack_require__(54);
 
 /**
  * The base implementation of `_.flatten` with support for restricting flattening.
@@ -3777,10 +3737,10 @@ module.exports = baseFlatten;
 
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createBaseFor = __webpack_require__(49);
+var createBaseFor = __webpack_require__(48);
 
 /**
  * The base implementation of `baseForOwn` which iterates over `object`
@@ -3799,11 +3759,11 @@ module.exports = baseFor;
 
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFor = __webpack_require__(36),
-    keys = __webpack_require__(76);
+var baseFor = __webpack_require__(35),
+    keys = __webpack_require__(75);
 
 /**
  * The base implementation of `_.forOwn` without support for iteratee shorthands.
@@ -3821,7 +3781,7 @@ module.exports = baseForOwn;
 
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(1),
@@ -3845,11 +3805,11 @@ module.exports = baseIsArguments;
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(1),
-    isLength = __webpack_require__(12),
+    isLength = __webpack_require__(17),
     isObjectLike = __webpack_require__(3);
 
 /** `Object#toString` result references. */
@@ -3911,11 +3871,11 @@ module.exports = baseIsTypedArray;
 
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isPrototype = __webpack_require__(57),
-    nativeKeys = __webpack_require__(58);
+var isPrototype = __webpack_require__(56),
+    nativeKeys = __webpack_require__(57);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -3947,7 +3907,7 @@ module.exports = baseKeys;
 
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports) {
 
 /**
@@ -3967,7 +3927,7 @@ module.exports = basePropertyOf;
 
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports) {
 
 /**
@@ -4004,7 +3964,7 @@ module.exports = baseSlice;
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports) {
 
 /**
@@ -4030,13 +3990,13 @@ module.exports = baseTimes;
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(0),
-    arrayMap = __webpack_require__(29),
+    arrayMap = __webpack_require__(28),
     isArray = __webpack_require__(2),
-    isSymbol = __webpack_require__(74);
+    isSymbol = __webpack_require__(73);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -4073,7 +4033,7 @@ module.exports = baseToString;
 
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports) {
 
 /**
@@ -4093,10 +4053,10 @@ module.exports = baseUnary;
 
 
 /***/ }),
-/* 46 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(70);
+var identity = __webpack_require__(69);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -4113,10 +4073,10 @@ module.exports = castFunction;
 
 
 /***/ }),
-/* 47 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSlice = __webpack_require__(42);
+var baseSlice = __webpack_require__(41);
 
 /**
  * Casts `array` to a slice if it's needed.
@@ -4137,10 +4097,10 @@ module.exports = castSlice;
 
 
 /***/ }),
-/* 48 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isArrayLike = __webpack_require__(11);
+var isArrayLike = __webpack_require__(16);
 
 /**
  * Creates a `baseEach` or `baseEachRight` function.
@@ -4175,7 +4135,7 @@ module.exports = createBaseEach;
 
 
 /***/ }),
-/* 49 */
+/* 48 */
 /***/ (function(module, exports) {
 
 /**
@@ -4206,12 +4166,12 @@ module.exports = createBaseFor;
 
 
 /***/ }),
-/* 50 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castSlice = __webpack_require__(47),
-    hasUnicode = __webpack_require__(8),
-    stringToArray = __webpack_require__(62),
+var castSlice = __webpack_require__(46),
+    hasUnicode = __webpack_require__(13),
+    stringToArray = __webpack_require__(61),
     toString = __webpack_require__(4);
 
 /**
@@ -4245,12 +4205,12 @@ module.exports = createCaseFirst;
 
 
 /***/ }),
-/* 51 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayReduce = __webpack_require__(31),
-    deburr = __webpack_require__(67),
-    words = __webpack_require__(79);
+var arrayReduce = __webpack_require__(30),
+    deburr = __webpack_require__(66),
+    words = __webpack_require__(78);
 
 /** Used to compose unicode capture groups. */
 var rsApos = "['\u2019]";
@@ -4275,10 +4235,10 @@ module.exports = createCompounder;
 
 
 /***/ }),
-/* 52 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var basePropertyOf = __webpack_require__(41);
+var basePropertyOf = __webpack_require__(40);
 
 /** Used to map Latin Unicode letters to basic Latin letters. */
 var deburredLetters = {
@@ -4352,7 +4312,7 @@ module.exports = deburrLetter;
 
 
 /***/ }),
-/* 53 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(0);
@@ -4404,7 +4364,7 @@ module.exports = getRawTag;
 
 
 /***/ }),
-/* 54 */
+/* 53 */
 /***/ (function(module, exports) {
 
 /** Used to detect strings that need a more robust regexp to match words. */
@@ -4425,11 +4385,11 @@ module.exports = hasUnicodeWord;
 
 
 /***/ }),
-/* 55 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(0),
-    isArguments = __webpack_require__(10),
+    isArguments = __webpack_require__(15),
     isArray = __webpack_require__(2);
 
 /** Built-in value references. */
@@ -4451,7 +4411,7 @@ module.exports = isFlattenable;
 
 
 /***/ }),
-/* 56 */
+/* 55 */
 /***/ (function(module, exports) {
 
 /** Used as references for various `Number` constants. */
@@ -4482,7 +4442,7 @@ module.exports = isIndex;
 
 
 /***/ }),
-/* 57 */
+/* 56 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -4506,10 +4466,10 @@ module.exports = isPrototype;
 
 
 /***/ }),
-/* 58 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(61);
+var overArg = __webpack_require__(60);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeKeys = overArg(Object.keys, Object);
@@ -4518,10 +4478,10 @@ module.exports = nativeKeys;
 
 
 /***/ }),
-/* 59 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(7);
+/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(12);
 
 /** Detect free variable `exports`. */
 var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -4544,10 +4504,10 @@ var nodeUtil = (function() {
 
 module.exports = nodeUtil;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ }),
-/* 60 */
+/* 59 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -4575,7 +4535,7 @@ module.exports = objectToString;
 
 
 /***/ }),
-/* 61 */
+/* 60 */
 /***/ (function(module, exports) {
 
 /**
@@ -4596,12 +4556,12 @@ module.exports = overArg;
 
 
 /***/ }),
-/* 62 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var asciiToArray = __webpack_require__(32),
-    hasUnicode = __webpack_require__(8),
-    unicodeToArray = __webpack_require__(63);
+var asciiToArray = __webpack_require__(31),
+    hasUnicode = __webpack_require__(13),
+    unicodeToArray = __webpack_require__(62);
 
 /**
  * Converts `string` to an array.
@@ -4620,7 +4580,7 @@ module.exports = stringToArray;
 
 
 /***/ }),
-/* 63 */
+/* 62 */
 /***/ (function(module, exports) {
 
 /** Used to compose unicode character classes. */
@@ -4666,7 +4626,7 @@ module.exports = unicodeToArray;
 
 
 /***/ }),
-/* 64 */
+/* 63 */
 /***/ (function(module, exports) {
 
 /** Used to compose unicode character classes. */
@@ -4741,11 +4701,11 @@ module.exports = unicodeWords;
 
 
 /***/ }),
-/* 65 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var capitalize = __webpack_require__(66),
-    createCompounder = __webpack_require__(51);
+var capitalize = __webpack_require__(65),
+    createCompounder = __webpack_require__(50);
 
 /**
  * Converts `string` to [camel case](https://en.wikipedia.org/wiki/CamelCase).
@@ -4776,11 +4736,11 @@ module.exports = camelCase;
 
 
 /***/ }),
-/* 66 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toString = __webpack_require__(4),
-    upperFirst = __webpack_require__(78);
+    upperFirst = __webpack_require__(77);
 
 /**
  * Converts the first character of `string` to upper case and the remaining
@@ -4805,10 +4765,10 @@ module.exports = capitalize;
 
 
 /***/ }),
-/* 67 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var deburrLetter = __webpack_require__(52),
+var deburrLetter = __webpack_require__(51),
     toString = __webpack_require__(4);
 
 /** Used to match Latin Unicode letters (excluding mathematical operators). */
@@ -4856,10 +4816,10 @@ module.exports = deburr;
 
 
 /***/ }),
-/* 68 */
+/* 67 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFlatten = __webpack_require__(35);
+var baseFlatten = __webpack_require__(34);
 
 /**
  * Flattens `array` a single level deep.
@@ -4884,12 +4844,12 @@ module.exports = flatten;
 
 
 /***/ }),
-/* 69 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEach = __webpack_require__(27),
-    baseEach = __webpack_require__(34),
-    castFunction = __webpack_require__(46),
+var arrayEach = __webpack_require__(26),
+    baseEach = __webpack_require__(33),
+    castFunction = __webpack_require__(45),
     isArray = __webpack_require__(2);
 
 /**
@@ -4931,7 +4891,7 @@ module.exports = forEach;
 
 
 /***/ }),
-/* 70 */
+/* 69 */
 /***/ (function(module, exports) {
 
 /**
@@ -4958,11 +4918,11 @@ module.exports = identity;
 
 
 /***/ }),
-/* 71 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(9),
-    stubFalse = __webpack_require__(77);
+/* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(14),
+    stubFalse = __webpack_require__(76);
 
 /** Detect free variable `exports`. */
 var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -5000,14 +4960,14 @@ var isBuffer = nativeIsBuffer || stubFalse;
 
 module.exports = isBuffer;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(15)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(18)(module)))
 
 /***/ }),
-/* 72 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(1),
-    isObject = __webpack_require__(73);
+    isObject = __webpack_require__(72);
 
 /** `Object#toString` result references. */
 var asyncTag = '[object AsyncFunction]',
@@ -5046,7 +5006,7 @@ module.exports = isFunction;
 
 
 /***/ }),
-/* 73 */
+/* 72 */
 /***/ (function(module, exports) {
 
 /**
@@ -5083,7 +5043,7 @@ module.exports = isObject;
 
 
 /***/ }),
-/* 74 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(1),
@@ -5118,12 +5078,12 @@ module.exports = isSymbol;
 
 
 /***/ }),
-/* 75 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsTypedArray = __webpack_require__(39),
-    baseUnary = __webpack_require__(45),
-    nodeUtil = __webpack_require__(59);
+var baseIsTypedArray = __webpack_require__(38),
+    baseUnary = __webpack_require__(44),
+    nodeUtil = __webpack_require__(58);
 
 /* Node.js helper references. */
 var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -5151,12 +5111,12 @@ module.exports = isTypedArray;
 
 
 /***/ }),
-/* 76 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayLikeKeys = __webpack_require__(28),
-    baseKeys = __webpack_require__(40),
-    isArrayLike = __webpack_require__(11);
+var arrayLikeKeys = __webpack_require__(27),
+    baseKeys = __webpack_require__(39),
+    isArrayLike = __webpack_require__(16);
 
 /**
  * Creates an array of the own enumerable property names of `object`.
@@ -5194,7 +5154,7 @@ module.exports = keys;
 
 
 /***/ }),
-/* 77 */
+/* 76 */
 /***/ (function(module, exports) {
 
 /**
@@ -5218,10 +5178,10 @@ module.exports = stubFalse;
 
 
 /***/ }),
-/* 78 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createCaseFirst = __webpack_require__(50);
+var createCaseFirst = __webpack_require__(49);
 
 /**
  * Converts the first character of `string` to upper case.
@@ -5246,13 +5206,13 @@ module.exports = upperFirst;
 
 
 /***/ }),
-/* 79 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var asciiWords = __webpack_require__(33),
-    hasUnicodeWord = __webpack_require__(54),
+var asciiWords = __webpack_require__(32),
+    hasUnicodeWord = __webpack_require__(53),
     toString = __webpack_require__(4),
-    unicodeWords = __webpack_require__(64);
+    unicodeWords = __webpack_require__(63);
 
 /**
  * Splits `string` into an array of its words.
@@ -5287,16 +5247,16 @@ module.exports = words;
 
 
 /***/ }),
-/* 80 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(21);
+var content = __webpack_require__(22);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(13)(content, {});
+var update = __webpack_require__(7)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -5313,16 +5273,16 @@ if(false) {
 }
 
 /***/ }),
-/* 81 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(22);
+var content = __webpack_require__(23);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
-var update = __webpack_require__(13)(content, {});
+var update = __webpack_require__(7)(content, {});
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -5337,6 +5297,49 @@ if(false) {
 	// When the module is disposed, remove the <style> tags
 	module.hot.dispose(function() { update(); });
 }
+
+/***/ }),
+/* 81 */,
+/* 82 */,
+/* 83 */,
+/* 84 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_eeaas__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__ = __webpack_require__(20);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_eeaas_nyancat__ = __webpack_require__(19);
+
+
+
+
+const snake1 = Object.assign({}, __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__["a" /* default */]);
+const snake2 = Object.assign({}, __WEBPACK_IMPORTED_MODULE_1_eeaas_snake__["a" /* default */]);
+
+snake1.name = 'Snake1';
+snake2.name = 'Snake2';
+
+Object.assign(snake2, {
+  enable() {
+    this.startTrigger();
+  },
+
+  disable() {
+    document.getElementById('snake-trigger-button').removeEventListener('click', this.start);
+    this.stop();
+  },
+
+  startTrigger() {
+    document.getElementById('snake-trigger-button').addEventListener('click', this.start);
+  }
+});
+
+__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(snake1);
+__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(snake2);
+__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].register(__WEBPACK_IMPORTED_MODULE_2_eeaas_nyancat__["a" /* default */]);
+__WEBPACK_IMPORTED_MODULE_0_eeaas__["a" /* default */].enable();
+
 
 /***/ })
 /******/ ]);

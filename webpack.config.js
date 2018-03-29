@@ -1,12 +1,17 @@
 var path = require('path');
 
 module.exports = {
-  entry: './app/main.js',
+  entry: {
+    app: './app/main.js',
+    eeaas: './app/eeaas.js',
+    'eeaas-snake': './app/eeaas-snake.js',
+    'eeaas-nyancat': './app/eeaas-nyancat.js'
+  },
 
   watch: true,
 
   output: {
-    filename: 'app.js',
+    filename: '[name].js',
     path: path.resolve(__dirname, 'static')
   },
 
@@ -25,5 +30,5 @@ module.exports = {
         ]
       }
     ]
-  },
+  }
 };
