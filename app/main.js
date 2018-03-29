@@ -2,7 +2,13 @@ import Eeaas from 'eeaas';
 import Snake from 'eeaas-snake';
 import Nyancat from 'eeaas-nyancat';
 
-Object.assign(Snake, {
+const snake1 = Object.assign({}, Snake);
+const snake2 = Object.assign({}, Snake);
+
+snake1.name = 'Snake1';
+snake2.name = 'Snake2';
+
+Object.assign(snake2, {
   enable() {
     this.startTrigger();
   },
@@ -17,6 +23,7 @@ Object.assign(Snake, {
   }
 });
 
-Eeaas.register(Snake);
+Eeaas.register(snake1);
+Eeaas.register(snake2);
 Eeaas.register(Nyancat);
 Eeaas.enable();
