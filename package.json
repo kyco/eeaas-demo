@@ -1,0 +1,34 @@
+{
+  "name": "eeaas-demo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Eeaas demo",
+  "main": "server.js",
+  "scripts": {
+    "start-server": "nodemon server.js",
+    "start": "webpack"
+  },
+  "author": "Cornelius Weidmann",
+  "license": "MIT",
+  "engines": {
+    "node": "6.11.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "cookie-parser": "^1.4.3",
+    "css-loader": "^0.27.3",
+    "eeaas": "^1.0.15",
+    "eeaas-nyancat": "^1.0.3",
+    "eeaas-snake": "^1.0.7",
+    "express": "^4.15.2",
+    "express-hbs": "^1.0.4",
+    "express-session": "^1.15.1",
+    "handlebars": "^4.0.6",
+    "handlebars-loader": "^1.4.0",
+    "node-sass": "^4.5.0",
+    "sass-loader": "^6.0.3",
+    "style-loader": "^0.13.2",
+    "validator": "^7.0.0",
+    "webpack": "^2.2.1"
+  }
+}
