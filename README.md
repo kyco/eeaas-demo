@@ -1,7 +1,7 @@
 # DEPRECATED eeaas-demo
 
 > [!NOTE]
-> **This package has moved to: [kyco/eeaas](https://github.com/kyco/eeaas)**
+> **This package has moved to: https://github.com/kyco/eeaas**
 
 To run the project locally:
 ```
