@@ -1,7 +1,7 @@
-# eeaas-demo
+# DEPRECATED eeaas-demo
 
 > [!NOTE]
-> **This package has moved to: [kyco/eeaas](https://github.com/kyco/eeaas/tree/main/apps/demo-react)**
+> **This package has moved to: [kyco/eeaas](https://github.com/kyco/eeaas)**
 
 To run the project locally:
 ```
